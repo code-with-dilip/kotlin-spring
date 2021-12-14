@@ -33,6 +33,7 @@ dependencies {
 
     //db
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.junit.jupiter:junit-jupiter:5.7.0")
     runtimeOnly("com.h2database:h2")
 //    runtimeOnly("org.postgresql:postgresql")
 
