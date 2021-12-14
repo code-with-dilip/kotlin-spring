@@ -11,15 +11,19 @@ class CourseService(val courseRepository: CourseRepository) {
     fun addCourse(courseDTO: CourseDTO) : CourseDTO{
 
         val courseEntity = courseDTO.let {
-            Course(null, it.name, it.author)
+            Course(null, it.name, it.category)
         }
 
         courseRepository.save(courseEntity)
 
         return courseEntity.let {
-            CourseDTO(it.id!!, it.name, it.author)
+            CourseDTO(it.id!!, it.name, it.category)
         }
     }
+
+    fun retrieveAllCourses() =
+        courseRepository.findAll() ?: listOf()
+
 
 
 }

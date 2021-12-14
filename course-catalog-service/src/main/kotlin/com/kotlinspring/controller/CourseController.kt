@@ -1,6 +1,7 @@
 package com.kotlinspring.controller
 
 import com.kotlinspring.dto.CourseDTO
+import com.kotlinspring.entity.Course
 import com.kotlinspring.service.CourseService
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
@@ -17,4 +18,9 @@ class CourseController(val courseService :CourseService) {
         return courseService.addCourse(courseDTO)
 
     }
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    fun retrieveAllCourses(): Iterable<Course> = courseService.retrieveAllCourses()
+
 }

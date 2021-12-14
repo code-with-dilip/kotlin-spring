@@ -12,5 +12,5 @@ data class Course(
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     var id: Long?,
     val name: String,
-    val author: String
+    val category: String
 )

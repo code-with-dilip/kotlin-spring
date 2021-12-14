@@ -31,7 +31,7 @@ class GreetingControllerUnitTest {
         Mockito.`when`(greetingService.retrieveGreeting(Mockito.anyString())).thenCallRealMethod()
 
         val result =webTestClient.get()
-            .uri("/v1/greeting/{name}", name)
+            .uri("/v1/greetings/{name}", name)
             .exchange()
             .expectStatus().is2xxSuccessful
             .expectBody(String::class.java)

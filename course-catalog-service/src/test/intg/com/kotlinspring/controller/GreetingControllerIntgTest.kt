@@ -24,7 +24,7 @@ class GreetingControllerIntgTest {
         val name = "dilip"
 
         val result =webTestClient.get()
-            .uri("/v1/greeting/{name}", name)
+            .uri("/v1/greetings/{name}", name)
             .exchange()
             .expectStatus().is2xxSuccessful
             .expectBody(String::class.java)
@@ -33,5 +33,6 @@ class GreetingControllerIntgTest {
         Assertions.assertEquals("Hello $name!", result.responseBody)
 
     }
+
 
 }
