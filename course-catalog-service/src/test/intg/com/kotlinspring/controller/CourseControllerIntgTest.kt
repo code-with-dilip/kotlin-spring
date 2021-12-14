@@ -1,7 +1,7 @@
 package com.kotlinspring.controller
 
 import com.kotlinspring.dto.CourseDTO
-import com.kotlinspring.entity.Course
+import com.kotlinspring.entity.CourseEntity
 import com.kotlinspring.repository.CourseRepository
 import org.junit.jupiter.api.Test
 
@@ -12,7 +12,6 @@ import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWeb
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
-import org.springframework.test.web.reactive.server.expectBody
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
@@ -30,9 +29,9 @@ internal class CourseControllerIntgTest {
         courseRepository.deleteAll()
 
         val courses = listOf(
-            Course(null,
+            CourseEntity(null,
                 "Build RestFul APis using Spring Boot and Kotlin", "Development" ),
-            Course(null,
+            CourseEntity(null,
                 "Build Reactive Microservices using Spring WebFlux/SpringBoot", "Development" )
         )
         courses.forEach {
@@ -65,7 +64,7 @@ internal class CourseControllerIntgTest {
     }
 
     @Test
-    internal fun retrieveAllCourses() {
+     fun retrieveAllCourses() {
 
 
         val courseDTOs = webTestClient
@@ -77,7 +76,32 @@ internal class CourseControllerIntgTest {
             .returnResult()
             .responseBody
 
+        println("courseDTOs : $courseDTOs")
+
         assertEquals(2, courseDTOs!!.size)
+
+    }
+
+    @Test
+    fun updateCourse() {
+
+        val courseEntity = CourseEntity(null,
+            "Apache Kafka for Developers using Spring Boot", "Development" )
+        courseRepository.save(courseEntity)
+        val updatedCourseEntity = CourseEntity(null,
+            "Apache Kafka for Developers using Spring Boot1", "Development" )
+
+        val updatedCourseDTO = webTestClient
+            .put()
+            .uri("/v1/courses/{courseId}", courseEntity.id)
+            .bodyValue(updatedCourseEntity)
+            .exchange()
+            .expectStatus().isOk
+            .expectBody(CourseDTO::class.java)
+            .returnResult()
+            .responseBody
+
+        assertEquals("Apache Kafka for Developers using Spring Boot1", updatedCourseDTO?.name)
 
     }
 }
