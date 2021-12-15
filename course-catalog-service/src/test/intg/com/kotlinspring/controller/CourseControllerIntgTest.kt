@@ -104,4 +104,19 @@ internal class CourseControllerIntgTest {
         assertEquals("Apache Kafka for Developers using Spring Boot1", updatedCourseDTO?.name)
 
     }
+
+    @Test
+    fun deleteCourse() {
+
+        val courseEntity = CourseEntity(null,
+            "Apache Kafka for Developers using Spring Boot", "Development" )
+
+        courseRepository.save(courseEntity)
+        val updatedCourseDTO = webTestClient
+            .delete()
+            .uri("/v1/courses/{courseId}", courseEntity.id)
+            .exchange()
+            .expectStatus().isNoContent
+
+    }
 }
