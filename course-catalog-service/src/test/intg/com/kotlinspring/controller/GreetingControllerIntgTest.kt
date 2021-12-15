@@ -13,10 +13,8 @@ import org.springframework.test.web.reactive.server.WebTestClient
 @AutoConfigureWebTestClient
 class GreetingControllerIntgTest {
 
-
     @Autowired
     lateinit var webTestClient: WebTestClient
-
 
     @Test
     fun retrieveGreeting() {

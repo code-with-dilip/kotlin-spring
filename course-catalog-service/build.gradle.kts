@@ -6,6 +6,7 @@ plugins {
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
     kotlin("jvm") version "1.6.0"
     kotlin("plugin.spring") version "1.6.0"
+    //id("org.jetbrains.kotlin.plugin.spring") version "1.6.0"
     kotlin("plugin.jpa") version "1.6.0"
 }
 
@@ -38,6 +39,10 @@ dependencies {
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.boot:spring-boot-starter-webflux")
+    testImplementation("io.mockk:mockk:1.10.4")
+    testImplementation("com.ninja-squad:springmockk:3.0.1")
+
+
 }
 
 tasks.withType<KotlinCompile> {
