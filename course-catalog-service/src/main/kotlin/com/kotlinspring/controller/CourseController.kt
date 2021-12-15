@@ -18,7 +18,7 @@ class CourseController(val courseService :CourseService) {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    fun retrieveAllCourses(): Iterable<CourseDTO> = courseService.retrieveAllCourses()
+    fun retrieveAllCourses(): List<CourseDTO> = courseService.retrieveAllCourses()
 
 
     @PutMapping("/{course_id}")

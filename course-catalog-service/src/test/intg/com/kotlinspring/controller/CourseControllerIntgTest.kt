@@ -112,7 +112,7 @@ internal class CourseControllerIntgTest {
             "Apache Kafka for Developers using Spring Boot", "Development" )
 
         courseRepository.save(courseEntity)
-        val updatedCourseDTO = webTestClient
+        webTestClient
             .delete()
             .uri("/v1/courses/{courseId}", courseEntity.id)
             .exchange()
