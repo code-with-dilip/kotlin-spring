@@ -30,7 +30,7 @@ class GreetingControllerIntgTest {
             .expectBody(String::class.java)
             .returnResult()
 
-        Assertions.assertEquals("Hello $name!", result.responseBody)
+        Assertions.assertEquals("$name, Hello from default profile", result.responseBody)
 
     }
 
