@@ -23,6 +23,9 @@ dependencies {
     //web
     implementation("org.springframework.boot:spring-boot-starter-web")
 
+    //web
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+
     //kotlin
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
@@ -30,6 +33,10 @@ dependencies {
 
     //validator
     implementation("org.springframework.boot:spring-boot-starter-validation")
+
+    //logging
+    implementation("io.github.microutils:kotlin-logging-jvm:2.0.11")
+
 
 
     //db

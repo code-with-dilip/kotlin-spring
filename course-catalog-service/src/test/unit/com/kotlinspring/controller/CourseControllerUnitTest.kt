@@ -9,6 +9,7 @@ import io.mockk.just
 import io.mockk.runs
 import io.mockk.verify
 import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
@@ -58,6 +59,62 @@ class CourseControllerUnitTest {
         Assertions.assertTrue {
             savedCourseDTO!!.id != null
         }
+    }
+
+    @Test
+    fun addCourse_validation() {
+        //given
+        val courseDTO = CourseDTO(
+            null,
+            "", ""
+        )
+
+        every { courseServiceMock.addCourse(any()) } returns CourseDTO(
+            1,
+            "Build RestFul APis using Spring Boot and Kotlin", "Dilip Sundarraj"
+        )
+
+        //when
+        val response = webTestClient
+            .post()
+            .uri("/v1/courses")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(courseDTO)
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectBody(String::class.java)
+            .returnResult()
+            .responseBody
+
+        println("response : $response")
+        assertEquals("courseDTO.category must not be blank, courseDTO.name must not be blank"
+        , response)
+    }
+
+    @Test
+    fun addCourse_runtime_exception() {
+        //given
+        val courseDTO = CourseDTO(
+            null,
+            "Build RestFul APis using Spring Boot and Kotlin", "Dilip Sundarraj"
+        )
+        val errorMessage = "Unexpected Error Occurred!"
+        every { courseServiceMock.addCourse(any()) } throws RuntimeException(errorMessage)
+
+        //when
+        val response = webTestClient
+            .post()
+            .uri("/v1/courses")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(courseDTO)
+            .exchange()
+            .expectStatus().is5xxServerError
+            .expectBody(String::class.java)
+            .returnResult()
+            .responseBody
+
+        assertEquals(errorMessage
+            , response)
     }
 
     @Test
