@@ -10,6 +10,7 @@ spring:
     database: h2
     database-platform: org.hibernate.dialect.H2Dialect
     generate-ddl: true
+    show-sql: true
   h2:
     console:
       enabled: true

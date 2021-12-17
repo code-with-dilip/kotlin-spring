@@ -120,7 +120,7 @@ class CourseControllerUnitTest {
     @Test
     fun retrieveAllCourses() {
 
-        every { courseServiceMock.retrieveAllCourses() }.returnsMany(
+        every { courseServiceMock.retrieveAllCourses(any()) }.returnsMany(
             listOf(
                 CourseDTO(1,
                     "Build RestFul APis using Spring Boot and Kotlin", "Development" ),
