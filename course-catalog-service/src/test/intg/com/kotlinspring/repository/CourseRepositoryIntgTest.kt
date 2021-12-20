@@ -1,10 +1,10 @@
 package com.kotlinspring.repository
 
-import com.kotlinspring.entity.CourseEntity
+import com.kotlinspring.util.courseEntityList
+import com.kotlinspring.util.instructorEntity
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
@@ -20,18 +20,21 @@ class CourseRepositoryIntgTest {
     @Autowired
     lateinit var courseRepository: CourseRepository
 
+
+    @Autowired
+    lateinit var instructorRepository: InstructorRepository
+
+
+
     @BeforeEach
     fun setUp(){
+        instructorRepository.deleteAll()
         courseRepository.deleteAll()
 
-        val courses = listOf(
-            CourseEntity(null,
-                "Build RestFul APis using SpringBoot and Kotlin", "Development" ),
-            CourseEntity(null,
-                "Build Reactive Microservices using Spring WebFlux/SpringBoot", "Development" ),
-            CourseEntity(null,
-                "Wiremock for Java Developers", "Development" )
-        )
+        val instructor = instructorEntity()
+        instructorRepository.save(instructor)
+
+        val courses = courseEntityList(instructor)
         courses.forEach {
             courseRepository.save(it)
         }
