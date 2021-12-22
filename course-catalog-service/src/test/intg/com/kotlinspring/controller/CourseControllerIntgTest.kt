@@ -1,8 +1,11 @@
 package com.kotlinspring.controller
 
 import com.kotlinspring.dto.CourseDTO
-import com.kotlinspring.entity.CourseEntity
+import com.kotlinspring.entity.Course
 import com.kotlinspring.repository.CourseRepository
+import com.kotlinspring.repository.InstructorRepository
+import com.kotlinspring.util.courseEntityList
+import com.kotlinspring.util.instructorEntity
 import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.Assertions.*
@@ -25,18 +28,18 @@ internal class CourseControllerIntgTest {
     @Autowired
     lateinit var courseRepository: CourseRepository
 
+    @Autowired
+    lateinit var instructorRepository: InstructorRepository
+
     @BeforeEach
     fun setUp(){
         courseRepository.deleteAll()
+        instructorRepository.deleteAll()
 
-        val courses = listOf(
-            CourseEntity(null,
-                "Build RestFul APis using SpringBoot and Kotlin", "Development" ),
-            CourseEntity(null,
-                "Build Reactive Microservices using Spring WebFlux/SpringBoot", "Development" ),
-            CourseEntity(null,
-                "Wiremock for Java Developers", "Development" )
-        )
+        val instructor = instructorEntity()
+        instructorRepository.save(instructor)
+
+        val courses = courseEntityList(instructor)
         courses.forEach {
             courseRepository.save(it)
         }
@@ -45,9 +48,13 @@ internal class CourseControllerIntgTest {
 
     @Test
     fun addCourse() {
+
+        val instructor = instructorRepository.findInstructorByName("Dilip Sundarraj")
+
         //given
         val courseDTO = CourseDTO(null,
-            "Build RestFul APis using Spring Boot and Kotlin", "Dilip Sundarraj" )
+            "Build RestFul APis using Spring Boot and Kotlin", "Dilip Sundarraj",
+            instructor.id )
 
         //when
         val savedCourseDTO = webTestClient
@@ -64,6 +71,30 @@ internal class CourseControllerIntgTest {
         assertTrue {
             savedCourseDTO!!.id!=null
         }
+    }
+
+
+    @Test
+    fun addCourse_InvlaidOInstructorId() {
+
+        //given
+        val courseDTO = CourseDTO(null,
+            "Build RestFul APis using Spring Boot and Kotlin", "Dilip Sundarraj",
+            999 )
+
+        //when
+        val response = webTestClient
+            .post()
+            .uri("/v1/courses")
+            .bodyValue(courseDTO)
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectBody(String::class.java)
+            .returnResult()
+            .responseBody
+
+        //then
+        assertEquals("Instructor Id is not Valid!", response)
     }
 
     @Test
@@ -110,10 +141,12 @@ internal class CourseControllerIntgTest {
     @Test
     fun updateCourse() {
 
-        val courseEntity = CourseEntity(null,
-            "Apache Kafka for Developers using Spring Boot", "Development" )
+        val instructor = instructorRepository.findInstructorByName("Dilip Sundarraj")
+        val courseEntity = Course(null,
+            "Apache Kafka for Developers using Spring Boot", "Development",
+            instructor)
         courseRepository.save(courseEntity)
-        val updatedCourseEntity = CourseEntity(null,
+        val updatedCourseEntity = Course(null,
             "Apache Kafka for Developers using Spring Boot1", "Development" )
 
         val updatedCourseDTO = webTestClient
@@ -133,8 +166,10 @@ internal class CourseControllerIntgTest {
     @Test
     fun deleteCourse() {
 
-        val courseEntity = CourseEntity(null,
-            "Apache Kafka for Developers using Spring Boot", "Development" )
+        val instructor = instructorRepository.findInstructorByName("Dilip Sundarraj")
+        val courseEntity = Course(null,
+            "Apache Kafka for Developers using Spring Boot", "Development" ,
+            instructor)
 
         courseRepository.save(courseEntity)
         webTestClient

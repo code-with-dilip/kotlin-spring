@@ -1,18 +1,25 @@
 package com.kotlinspring.service
 
 import com.kotlinspring.dto.CourseDTO
-import com.kotlinspring.entity.CourseEntity
+import com.kotlinspring.entity.Course
 import com.kotlinspring.exception.CourseNotFoundException
+import com.kotlinspring.exception.InstructorNotValidException
 import com.kotlinspring.repository.CourseRepository
 import org.springframework.stereotype.Service
 
 @Service
-class CourseService(val courseRepository: CourseRepository) {
+class CourseService(val courseRepository: CourseRepository,
+val instructorService: InstructorService) {
 
     fun addCourse(courseDTO: CourseDTO): CourseDTO {
 
+        val instructor = instructorService.findInstructorById(courseDTO.instructorId!!)
+        if(!instructor.isPresent){
+            throw InstructorNotValidException("Instructor Id is not Valid!")
+        }
+
         val courseEntity = courseDTO.let {
-            CourseEntity(null, it.name, it.category)
+            Course(null, it.name, it.category, instructor.get())
         }
 
         courseRepository.save(courseEntity)

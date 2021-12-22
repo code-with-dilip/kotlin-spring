@@ -1,8 +1,9 @@
 package com.kotlinspring.controller
 
 import com.kotlinspring.dto.CourseDTO
-import com.kotlinspring.entity.CourseEntity
+import com.kotlinspring.entity.Course
 import com.kotlinspring.service.CourseService
+import com.kotlinspring.util.courseDTO
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import io.mockk.just
@@ -11,11 +12,9 @@ import io.mockk.verify
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.test.web.reactive.server.WebTestClient
 
@@ -33,15 +32,9 @@ class CourseControllerUnitTest {
     @Test
     fun addCourse() {
         //given
-        val courseDTO = CourseDTO(
-            null,
-            "Build RestFul APis using Spring Boot and Kotlin", "Dilip Sundarraj"
-        )
+        val courseDTO = courseDTO()
 
-        every { courseServiceMock.addCourse(any()) } returns CourseDTO(
-            1,
-            "Build RestFul APis using Spring Boot and Kotlin", "Dilip Sundarraj"
-        )
+        every { courseServiceMock.addCourse(any()) } returns courseDTO(id=1)
 
         //when
         val savedCourseDTO = webTestClient
@@ -64,15 +57,9 @@ class CourseControllerUnitTest {
     @Test
     fun addCourse_validation() {
         //given
-        val courseDTO = CourseDTO(
-            null,
-            "", ""
-        )
+        val courseDTO = courseDTO(name = "", category = "")
 
-        every { courseServiceMock.addCourse(any()) } returns CourseDTO(
-            1,
-            "Build RestFul APis using Spring Boot and Kotlin", "Dilip Sundarraj"
-        )
+        every { courseServiceMock.addCourse(any()) } returns courseDTO(id=1)
 
         //when
         val response = webTestClient
@@ -94,10 +81,7 @@ class CourseControllerUnitTest {
     @Test
     fun addCourse_runtime_exception() {
         //given
-        val courseDTO = CourseDTO(
-            null,
-            "Build RestFul APis using Spring Boot and Kotlin", "Dilip Sundarraj"
-        )
+        val courseDTO = courseDTO()
         val errorMessage = "Unexpected Error Occurred!"
         every { courseServiceMock.addCourse(any()) } throws RuntimeException(errorMessage)
 
@@ -117,15 +101,19 @@ class CourseControllerUnitTest {
             , response)
     }
 
+
+
     @Test
     fun retrieveAllCourses() {
 
         every { courseServiceMock.retrieveAllCourses(any()) }.returnsMany(
             listOf(
                 CourseDTO(1,
-                    "Build RestFul APis using Spring Boot and Kotlin", "Development" ),
+                    "Build RestFul APis using Spring Boot and Kotlin", "Development" ,
+                1),
                 CourseDTO(2,
-                    "Build Reactive Microservices using Spring WebFlux/SpringBoot", "Development" )
+                    "Build Reactive Microservices using Spring WebFlux/SpringBoot", "Development" ,
+                    1)
             )
         )
 
@@ -148,11 +136,12 @@ class CourseControllerUnitTest {
     @Test
     fun updateCourse() {
 
-        val updatedCourseEntity = CourseEntity(null,
+        val updatedCourseEntity = Course(null,
             "Apache Kafka for Developers using Spring Boot1", "Development" )
 
         every { courseServiceMock.updateCourse(any(), any()) } returns CourseDTO(100,
-            "Apache Kafka for Developers using Spring Boot1", "Development" )
+            "Apache Kafka for Developers using Spring Boot1", "Development" ,
+            1)
 
 
         val updatedCourseDTO = webTestClient
